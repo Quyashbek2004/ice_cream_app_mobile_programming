@@ -12,8 +12,9 @@ final List<IceCream> iceCreamList = [
     oldPrice: 10.00,
     tags: ['Strawberry', 'Pure Milk'],
     macros: [
-      Macro(title: 'Fruits', value: 30, emoji: '🍓'), // Category: Fruits
-      Macro(title: 'Milk', value: 80, emoji: '🥛'),
+      // Strawberry should be fruit-forward: Fruits has the highest value
+      Macro(title: 'Fruits', value: 85, emoji: '🍓'), // Category: Fruits
+      Macro(title: 'Milk', value: 60, emoji: '🥛'),
       Macro(title: 'Sugar', value: 20, emoji: '🍬'),
     ],
   ),
@@ -27,8 +28,9 @@ final List<IceCream> iceCreamList = [
     oldPrice: 12.00,
     tags: ['Chocolate', 'Creamy'],
     macros: [
-      Macro(title: 'Chocolate', value: 40, emoji: '🍫'), // Category: Chocolate (changed from 'Choco')
-      Macro(title: 'Milk', value: 60, emoji: '🥛'),
+      // Chocolate-forward: Chocolate has the highest value
+      Macro(title: 'Chocolate', value: 90, emoji: '🍫'), // Category: Chocolate
+      Macro(title: 'Milk', value: 50, emoji: '🥛'),
       Macro(title: 'Sugar', value: 30, emoji: '🍬'),
     ],
   ),
@@ -42,7 +44,8 @@ final List<IceCream> iceCreamList = [
     oldPrice: 9.00,
     tags: ['Vanilla', 'Classic'],
     macros: [
-      Macro(title: 'Milk', value: 90, emoji: '🥛'), // Category: Milk (changed from 'Vanilla')
+      // Vanilla is milk-forward
+      Macro(title: 'Milk', value: 95, emoji: '🥛'), // Category: Milk
       Macro(title: 'Sugar', value: 25, emoji: '🍬'),
     ],
   ),
@@ -55,9 +58,10 @@ final List<IceCream> iceCreamList = [
     oldPrice: null,
     tags: ['Mint', 'Chocolate'],
     macros: [
-      Macro(title: 'Chocolate', value: 25, emoji: '🍫'), // Category: Chocolate (changed from 'Choco')
-      Macro(title: 'Milk', value: 70, emoji: '🥛'),
-      Macro(title: 'Mint', value: 15, emoji: '🍃'), // Kept mint for flavor info, but not for category.
+      // Mint chocolate should be chocolate-forward
+      Macro(title: 'Chocolate', value: 70, emoji: '🍫'), // Category: Chocolate
+      Macro(title: 'Milk', value: 60, emoji: '🥛'),
+      Macro(title: 'Mint', value: 15, emoji: '🍃'), // flavor detail
     ],
   ),
   IceCream(
@@ -69,8 +73,9 @@ final List<IceCream> iceCreamList = [
     oldPrice: 11.00,
     tags: ['Blueberry', 'Fruity'],
     macros: [
-      Macro(title: 'Fruits', value: 35, emoji: '🫐'), // Category: Fruits
-      Macro(title: 'Milk', value: 75, emoji: '🥛'),
+      // Blueberry should be fruit-forward
+      Macro(title: 'Fruits', value: 85, emoji: '🫐'), // Category: Fruits
+      Macro(title: 'Milk', value: 60, emoji: '🥛'),
       Macro(title: 'Sugar', value: 22, emoji: '🍬'),
     ],
   ),
@@ -83,9 +88,10 @@ final List<IceCream> iceCreamList = [
     oldPrice: null,
     tags: ['Coffee', 'Crunchy'],
     macros: [
-      Macro(title: 'Milk', value: 70, emoji: '🥛'), // Category: Milk (changed from 'Coffee' to fit the 3 categories)
+      // Coffee is typically milk-forward ice-cream with coffee flavor
+      Macro(title: 'Milk', value: 80, emoji: '🥛'), // Category: Milk
       Macro(title: 'Sugar', value: 28, emoji: '🍬'),
-      Macro(title: 'Coffee', value: 20, emoji: '☕'), // Kept coffee for flavor info, but not for category.
+      Macro(title: 'Coffee', value: 35, emoji: '☕'), // flavor detail
     ],
   ),
   IceCream(
@@ -97,7 +103,8 @@ final List<IceCream> iceCreamList = [
     oldPrice: 10.50,
     tags: ['Mango', 'Tropical'],
     macros: [
-      Macro(title: 'Fruits', value: 45, emoji: '🥭'), // Category: Fruits
+      // Mango should be fruit-forward
+      Macro(title: 'Fruits', value: 90, emoji: '🥭'), // Category: Fruits
       Macro(title: 'Milk', value: 55, emoji: '🥛'),
       Macro(title: 'Sugar', value: 20, emoji: '🍬'),
     ],
@@ -111,9 +118,10 @@ final List<IceCream> iceCreamList = [
     oldPrice: 11.50,
     tags: ['Pistachio', 'Nutty'],
     macros: [
-      Macro(title: 'Milk', value: 65, emoji: '🥛'), // Category: Milk (changed from 'Nuts' to fit the 3 categories)
+      // Pistachio is generally milk-forward with nutty flavor
+      Macro(title: 'Milk', value: 80, emoji: '🥛'), // Category: Milk
       Macro(title: 'Sugar', value: 23, emoji: '🍬'),
-      Macro(title: 'Nuts', value: 25, emoji: '🌰'), // Kept nuts for flavor info, but not for category.
+      Macro(title: 'Nuts', value: 30, emoji: '🌰'), // flavor detail
     ],
   ),
 ];

@@ -31,20 +31,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              // Handle cart action
-            },
-            icon: Icon(CupertinoIcons.cart),
-          ),
-          IconButton(
-            onPressed: () {
-              context.read<SignInBloc>().add(SignOutRequired());
-            },
-            icon: Icon(CupertinoIcons.arrow_right_to_line),
-          ),
-        ],
       ),
       body: ListView(
         children: [
