@@ -43,6 +43,7 @@ dependencies:
 
   user_repository:
     path: packages/user_repository
+  firebase_auth: ^6.0.2
 
 dev_dependencies:
   flutter_test:

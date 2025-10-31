@@ -10,10 +10,9 @@ final List<IceCream> iceCreamList = [
     imageUrl: 'assets/1.png',
     price: 8.00,
     oldPrice: 10.00,
-    tags: ['Strawberry', 'Pure Milk'],
+    tags: ['Ultra Milk'],
     macros: [
       // Strawberry should be fruit-forward: Fruits has the highest value
-      Macro(title: 'Fruits', value: 85, emoji: '🍓'), // Category: Fruits
       Macro(title: 'Milk', value: 60, emoji: '🥛'),
       Macro(title: 'Sugar', value: 20, emoji: '🍬'),
     ],
@@ -30,7 +29,6 @@ final List<IceCream> iceCreamList = [
     macros: [
       // Chocolate-forward: Chocolate has the highest value
       Macro(title: 'Chocolate', value: 90, emoji: '🍫'), // Category: Chocolate
-      Macro(title: 'Milk', value: 50, emoji: '🥛'),
       Macro(title: 'Sugar', value: 30, emoji: '🍬'),
     ],
   ),
@@ -55,12 +53,11 @@ final List<IceCream> iceCreamList = [
     description: 'Refreshing mint ice-cream with decadent chocolate chips.',
     imageUrl: 'assets/4.png',
     price: 8.50,
-    oldPrice: null,
+    oldPrice: 10.00,
     tags: ['Mint', 'Chocolate'],
     macros: [
       // Mint chocolate should be chocolate-forward
       Macro(title: 'Chocolate', value: 70, emoji: '🍫'), // Category: Chocolate
-      Macro(title: 'Milk', value: 60, emoji: '🥛'),
       Macro(title: 'Mint', value: 15, emoji: '🍃'), // flavor detail
     ],
   ),
@@ -75,21 +72,20 @@ final List<IceCream> iceCreamList = [
     macros: [
       // Blueberry should be fruit-forward
       Macro(title: 'Fruits', value: 85, emoji: '🫐'), // Category: Fruits
-      Macro(title: 'Milk', value: 60, emoji: '🥛'),
       Macro(title: 'Sugar', value: 22, emoji: '🍬'),
     ],
   ),
   IceCream(
     id: 'ic6',
-    name: 'Coffee Crunch',
-    description: 'Bold coffee flavored ice-cream with crunchy toffee bits.',
-    imageUrl: 'assets/6.png',
+    name: 'Oreo Crunch',
+    description: 'Oreo flavored ice-cream with crunchy toffee bits.',
+    imageUrl: 'assets/9.png',
     price: 9.25,
-    oldPrice: null,
+    oldPrice: 10.50,
     tags: ['Coffee', 'Crunchy'],
     macros: [
       // Coffee is typically milk-forward ice-cream with coffee flavor
-      Macro(title: 'Milk', value: 80, emoji: '🥛'), // Category: Milk
+      Macro(title: 'Chocolate', value: 80, emoji: '🍫'), // Category: Milk
       Macro(title: 'Sugar', value: 28, emoji: '🍬'),
       Macro(title: 'Coffee', value: 35, emoji: '☕'), // flavor detail
     ],
@@ -101,10 +97,9 @@ final List<IceCream> iceCreamList = [
     imageUrl: 'assets/7.png',
     price: 8.75,
     oldPrice: 10.50,
-    tags: ['Mango', 'Tropical'],
+    tags: ['Milky', 'Soft'],
     macros: [
       // Mango should be fruit-forward
-      Macro(title: 'Fruits', value: 90, emoji: '🥭'), // Category: Fruits
       Macro(title: 'Milk', value: 55, emoji: '🥛'),
       Macro(title: 'Sugar', value: 20, emoji: '🍬'),
     ],
@@ -119,9 +114,23 @@ final List<IceCream> iceCreamList = [
     tags: ['Pistachio', 'Nutty'],
     macros: [
       // Pistachio is generally milk-forward with nutty flavor
-      Macro(title: 'Milk', value: 80, emoji: '🥛'), // Category: Milk
+      Macro(title: 'Fruits', value: 80, emoji: '🫐'), // Category: Milk
       Macro(title: 'Sugar', value: 23, emoji: '🍬'),
       Macro(title: 'Nuts', value: 30, emoji: '🌰'), // flavor detail
+    ],
+  ),
+  IceCream(
+    id: 'ic9',
+    name: 'Colorful Light',
+    description: 'Remember childhood with this colorful and light ice-cream.',
+    imageUrl: 'assets/6.png',
+    price: 9.75,
+    oldPrice: 11.50,
+    tags: ['Cherry', 'Soft'],
+    macros: [
+      // Pistachio is generally milk-forward with nutty flavor
+      Macro(title: 'Fruits', value: 80, emoji: '🫐'), // Category: Milk
+      Macro(title: 'Sugar', value: 23, emoji: '🍬'),
     ],
   ),
 ];
