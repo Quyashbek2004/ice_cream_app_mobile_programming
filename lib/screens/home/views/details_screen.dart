@@ -59,7 +59,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -83,7 +83,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             Expanded(
                               child: Text(
                                 widget.iceCream.name,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.deepPurple,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
@@ -94,7 +94,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               children: [
                                 Text(
                                   "\$${widget.iceCream.price.toStringAsFixed(2)}",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.green,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 24,
@@ -127,18 +127,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 15),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
+                      const SizedBox(height: 15),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
                           child: Row(
                             children: [
-                              SizedBox(width: 10),
                               ...widget.iceCream.macros
                                   .map((macro) => Padding(
                                         padding:
-                                            const EdgeInsets.only(right: 10.0),
+                                            const EdgeInsets.symmetric(horizontal: 8.0),
                                         child: MyMacro(
                                           title: macro.title,
                                           value: macro.value,
@@ -150,7 +149,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       BlocBuilder<ReviewBloc, ReviewState>(
                         builder: (context, state) {
                           final averageRating =
@@ -164,14 +163,14 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Average Rating',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
                                       ),
                                     ),
-                                    SizedBox(height: 4),
+                                    const SizedBox(height: 4),
                                     Row(
                                       children: [
                                         StarRating(
@@ -180,12 +179,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                           readOnly: true,
                                           size: 20,
                                         ),
-                                        SizedBox(width: 8),
+                                        const SizedBox(width: 8),
                                         Text(
                                           averageRating > 0
                                               ? '${averageRating.toStringAsFixed(1)}/5'
                                               : 'No ratings',
-                                          style: TextStyle(fontSize: 14),
+                                          style: const TextStyle(fontSize: 14),
                                         ),
                                       ],
                                     ),
@@ -199,10 +198,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       builder: (context) => ReviewSheet(
                                         iceCreamId: widget.iceCream.id,
                                       ),
-                                    );
+                                    ).then((_) {
+                                      // Refresh reviews after sheet closes
+                                      context.read<ReviewBloc>().add(
+                                        FetchReviews(widget.iceCream.id),
+                                      );
+                                    });
                                   },
-                                  icon: Icon(Icons.add),
-                                  label: Text('Review'),
+                                  icon: const Icon(Icons.add),
+                                  label: const Text('Review'),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.blue.shade200,
                                   ),
@@ -212,7 +216,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           );
                         },
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       SizedBox(
                         width: MediaQuery.of(context).size.width / 1.8,
                         height: 60,
@@ -224,7 +228,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             elevation: 3,
                             backgroundColor: Colors.blue.shade200,
                           ),
-                          child: Text(
+                          child: const Text(
                             "Buy now!",
                             style: TextStyle(
                               fontSize: 30,
@@ -234,25 +238,58 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 BlocBuilder<ReviewBloc, ReviewState>(
                   builder: (context, state) {
                     final reviews = state.getReviews(widget.iceCream.id);
                     if (state.isLoading) {
-                      return Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: CircularProgressIndicator(),
+                      return const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(height: 12),
+                            Text('Loading reviews...'),
+                          ],
+                        ),
                       );
                     }
+
+                    if (state.errorMessage != null) {
+                      return Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Icon(Icons.error_outline, color: Colors.red, size: 32),
+                            const SizedBox(height: 12),
+                            Text(
+                              state.errorMessage!,
+                              style: const TextStyle(color: Colors.red),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 12),
+                            ElevatedButton(
+                              onPressed: () {
+                                context.read<ReviewBloc>().add(
+                                  FetchReviews(widget.iceCream.id),
+                                );
+                              },
+                              child: const Text('Retry'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0, top: 8.0),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 16.0, top: 8.0),
                           child: Text(
                             'Customer Reviews',
                             style: TextStyle(
@@ -261,10 +298,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 12),
+                        const SizedBox(height: 12),
                         if (reviews.isEmpty)
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
+                          const Padding(
+                            padding: EdgeInsets.all(16.0),
                             child: Text('No reviews yet. Be the first!'),
                           )
                         else
@@ -275,7 +312,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     );
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
               ],
             ),
           ),

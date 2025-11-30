@@ -38,9 +38,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     Emitter<CartState> emit,
   ) async {
     try {
-      // Find the cart item id
+      // Find the cart item by productId
       final existingItem = state.items
-          .firstWhere((item) => item.iceCream.id == event.iceCream.id);
+          .firstWhere((item) => item.productId == event.iceCream.id);
       await _cartService.updateQuantity(existingItem.id, event.quantity);
 
       final cartItems = await _cartService.fetchCart();

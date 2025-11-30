@@ -22,6 +22,8 @@ class CartItem {
 
   double get subtotal => price * quantity;
 
+  double get total => price * quantity;
+
   CartItem copyWith({int? quantity}) {
     return CartItem(
       id: id,

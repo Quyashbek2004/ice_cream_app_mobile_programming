@@ -22,7 +22,7 @@ class CartState extends Equatable {
   }
 
   double get total =>
-      items.fold(0, (sum, it) => sum + it.iceCream.price * it.quantity);
+      items.fold(0, (sum, it) => sum + it.price * it.quantity);
 
   int get totalItems => items.fold(0, (s, it) => s + it.quantity);
 

@@ -14,26 +14,32 @@ class ReviewRepository {
       final snapshot = await _firestore
           .collection('reviews')
           .where('iceCreamId', isEqualTo: iceCreamId)
-          .orderBy('date', descending: true)
           .get();
 
-      return snapshot.docs
+      // Sort in Dart instead of Firestore
+      final reviews = snapshot.docs
           .map((doc) => Review(
-                id: doc.id,
-                iceCreamId: doc['iceCreamId'] ?? '',
-                userId: doc['userId'] ?? '',
-                userName: doc['userName'] ?? 'Anonymous',
-                rating: (doc['rating'] ?? 0).toDouble(),
-                comment: doc['comment'] ?? '',
-                date: doc['date'] is Timestamp
-                    ? (doc['date'] as Timestamp).toDate()
-                    : DateTime.now(),
-              ))
+        id: doc.id,
+        iceCreamId: doc['iceCreamId'] ?? '',
+        userId: doc['userId'] ?? '',
+        userName: doc['userName'] ?? 'Anonymous',
+        rating: (doc['rating'] ?? 0).toDouble(),
+        comment: doc['comment'] ?? '',
+        date: doc['date'] is Timestamp
+            ? (doc['date'] as Timestamp).toDate()
+            : DateTime.now(),
+      ))
           .toList();
+
+      // Sort by date descending in Dart
+      reviews.sort((a, b) => b.date.compareTo(a.date));
+      return reviews;
     } catch (e) {
+      print('Error fetching reviews: $e');
       return [];
     }
   }
+
 
   Future<double> getAverageRating(String iceCreamId) async {
     try {
@@ -42,6 +48,7 @@ class ReviewRepository {
       final sum = reviews.fold<double>(0, (sum, review) => sum + review.rating);
       return sum / reviews.length;
     } catch (e) {
+      print('Error calculating average rating: $e');
       return 0.0;
     }
   }
@@ -64,6 +71,7 @@ class ReviewRepository {
         'createdAt': FieldValue.serverTimestamp(),
       });
     } catch (e) {
+      print('Error submitting review: $e');
       rethrow;
     }
   }
@@ -83,7 +91,7 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
     FetchReviews event,
     Emitter<ReviewState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(isLoading: true, errorMessage: null));
     try {
       final reviews = await _reviewRepository.getReviewsForProduct(event.iceCreamId);
       final average = await _reviewRepository.getAverageRating(event.iceCreamId);
@@ -98,11 +106,18 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
         reviews: updatedReviews,
         averageRatings: updatedAverages,
         isLoading: false,
+        errorMessage: null,
       ));
     } catch (e) {
+      print('Firestore query error: $e');
+      print('This error usually means you need to create a Firestore composite index.');
+      print('Go to your Firebase Console → Firestore Database → Indexes');
+      print('Create a composite index on the "reviews" collection with:');
+      print('  - iceCreamId (Ascending)');
+      print('  - date (Descending)');
       emit(state.copyWith(
         isLoading: false,
-        errorMessage: 'Failed to load reviews',
+        errorMessage: 'Failed to load reviews. Please check your Firestore indexes.',
       ));
     }
   }
@@ -111,6 +126,7 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
     SubmitReview event,
     Emitter<ReviewState> emit,
   ) async {
+    emit(state.copyWith(isLoading: true, errorMessage: null));
     try {
       await _reviewRepository.submitReview(
         iceCreamId: event.iceCreamId,
@@ -120,10 +136,28 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
         comment: event.comment,
       );
 
-      // Refresh reviews after submission
-      add(FetchReviews(event.iceCreamId));
+      // Fetch updated reviews after submission
+      final reviews = await _reviewRepository.getReviewsForProduct(event.iceCreamId);
+      final average = await _reviewRepository.getAverageRating(event.iceCreamId);
+
+      final updatedReviews = Map<String, List<Review>>.from(state.reviews);
+      updatedReviews[event.iceCreamId] = reviews;
+
+      final updatedAverages = Map<String, double>.from(state.averageRatings);
+      updatedAverages[event.iceCreamId] = average;
+
+      emit(state.copyWith(
+        reviews: updatedReviews,
+        averageRatings: updatedAverages,
+        isLoading: false,
+        errorMessage: null,
+      ));
     } catch (e) {
-      emit(state.copyWith(errorMessage: 'Failed to submit review'));
+      print('Error in submit review: $e');
+      emit(state.copyWith(
+        isLoading: false,
+        errorMessage: 'Failed to submit review',
+      ));
     }
   }
 }

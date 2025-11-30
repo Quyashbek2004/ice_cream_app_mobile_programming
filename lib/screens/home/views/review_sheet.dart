@@ -19,6 +19,7 @@ class ReviewSheet extends StatefulWidget {
 class _ReviewSheetState extends State<ReviewSheet> {
   late TextEditingController _commentController;
   double _rating = 0;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -57,6 +58,10 @@ class _ReviewSheetState extends State<ReviewSheet> {
       return;
     }
 
+    setState(() {
+      _isSubmitting = true;
+    });
+
     context.read<ReviewBloc>().add(
       SubmitReview(
         iceCreamId: widget.iceCreamId,
@@ -66,75 +71,105 @@ class _ReviewSheetState extends State<ReviewSheet> {
         comment: _commentController.text,
       ),
     );
-
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Review submitted successfully!')),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Write a Review',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+    return BlocListener<ReviewBloc, ReviewState>(
+      listener: (context, state) {
+        if (_isSubmitting && !state.isLoading) {
+          setState(() {
+            _isSubmitting = false;
+          });
+
+          if (state.errorMessage == null) {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Review submitted successfully!'),
+                backgroundColor: Colors.green,
               ),
-              const SizedBox(height: 16),
-              const Text('Rate this product'),
-              const SizedBox(height: 8),
-              StarRating(
-                initialRating: _rating,
-                onRatingChanged: (rating) {
-                  setState(() {
-                    _rating = rating;
-                  });
-                },
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errorMessage ?? 'Failed to submit review'),
+                backgroundColor: Colors.red,
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _commentController,
-                decoration: InputDecoration(
-                  hintText: 'Write your comment here...',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+            );
+          }
+        }
+      },
+      child: Container(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Write a Review',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                maxLines: 4,
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _submitReview,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade200,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  child: const Text(
-                    'Submit Review',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                const SizedBox(height: 16),
+                const Text('Rate this product'),
+                const SizedBox(height: 8),
+                StarRating(
+                  initialRating: _rating,
+                  onRatingChanged: (rating) {
+                    setState(() {
+                      _rating = rating;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _commentController,
+                  enabled: !_isSubmitting,
+                  decoration: InputDecoration(
+                    hintText: 'Write your comment here...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
+                  maxLines: 4,
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _isSubmitting ? null : _submitReview,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue.shade200,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    child: _isSubmitting
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            'Submit Review',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
