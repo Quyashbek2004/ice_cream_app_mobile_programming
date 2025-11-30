@@ -20,6 +20,7 @@ class _ReviewSheetState extends State<ReviewSheet> {
   late TextEditingController _commentController;
   double _rating = 0;
   bool _isSubmitting = false;
+  bool _isHovering = false;
 
   @override
   void initState() {
@@ -104,70 +105,156 @@ class _ReviewSheetState extends State<ReviewSheet> {
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(24.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
                 const Text(
                   'Write a Review',
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
+                    color: Colors.deepPurple,
                   ),
                 ),
-                const SizedBox(height: 16),
-                const Text('Rate this product'),
-                const SizedBox(height: 8),
-                StarRating(
-                  initialRating: _rating,
-                  onRatingChanged: (rating) {
-                    setState(() {
-                      _rating = rating;
-                    });
-                  },
+                const SizedBox(height: 20),
+                const Text(
+                  'Rate this product',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey,
+                  ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
+                Center(
+                  child: StarRating(
+                    initialRating: _rating,
+                    onRatingChanged: (rating) {
+                      setState(() {
+                        _rating = rating;
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'Your comment',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 12),
                 TextField(
                   controller: _commentController,
                   enabled: !_isSubmitting,
                   decoration: InputDecoration(
-                    hintText: 'Write your comment here...',
+                    hintText: 'Write your thoughts about this product...',
+                    hintStyle: TextStyle(color: Colors.grey.shade400),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.pinkAccent, width: 2),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
                   ),
                   maxLines: 4,
+                  textInputAction: TextInputAction.done,
                 ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _isSubmitting ? null : _submitReview,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade200,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                const SizedBox(height: 24),
+                MouseRegion(
+                  onEnter: (_) {
+                    if (!_isSubmitting) {
+                      setState(() {
+                        _isHovering = true;
+                      });
+                    }
+                  },
+                  onExit: (_) {
+                    setState(() {
+                      _isHovering = false;
+                    });
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _isSubmitting ? null : _submitReview,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _isHovering && !_isSubmitting
+                            ? Colors.pinkAccent.shade200
+                            : Colors.pinkAccent.shade100,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        elevation: _isHovering && !_isSubmitting ? 8 : 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: _isSubmitting
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.grey.shade600,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                const Text(
+                                  'Submitting...',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : const Text(
+                              'Submit Review',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
                     ),
-                    child: _isSubmitting
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                            ),
-                          )
-                        : const Text(
-                            'Submit Review',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
                   ),
                 ),
+                const SizedBox(height: 12),
               ],
             ),
           ),
