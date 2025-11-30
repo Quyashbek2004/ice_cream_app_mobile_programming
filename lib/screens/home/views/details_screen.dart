@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/components/macro.dart';
 import 'package:flutter_app/models/ice_cream.dart';
 import 'package:flutter_app/blocs/review/review_bloc.dart';
-import 'package:flutter_app/blocs/authentication/authentication_bloc.dart';
+import 'package:flutter_app/blocs/cart/cart_bloc.dart';
 import 'package:flutter_app/components/star_rating.dart';
 import 'package:flutter_app/components/review_card.dart';
 import 'review_sheet.dart';
@@ -31,6 +31,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent.shade100,
         title: Text(widget.iceCream.name),
+        elevation: 0,
       ),
       backgroundColor: Colors.pink.shade100,
       body: SingleChildScrollView(
@@ -91,6 +92,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               ),
                             ),
                             Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
                                   "\$${widget.iceCream.price.toStringAsFixed(2)}",
@@ -199,7 +201,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                         iceCreamId: widget.iceCream.id,
                                       ),
                                     ).then((_) {
-                                      // Refresh reviews after sheet closes
                                       context.read<ReviewBloc>().add(
                                         FetchReviews(widget.iceCream.id),
                                       );
@@ -209,6 +210,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   label: const Text('Review'),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.blue.shade200,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -216,29 +220,78 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           );
                         },
                       ),
-                      const SizedBox(height: 20),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.8,
-                        height: 60,
-                        child: TextButton(
-                          onPressed: () {
-                            // Buy now action
-                          },
-                          style: TextButton.styleFrom(
-                            elevation: 3,
-                            backgroundColor: Colors.blue.shade200,
-                          ),
-                          child: const Text(
-                            "Buy now!",
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                      const SizedBox(height: 24),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: MouseRegion(
+                          child: GestureDetector(
+                            onTapDown: (_) {
+                              setState(() {});
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.pinkAccent.shade100,
+                                    Colors.pinkAccent.shade200,
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.pinkAccent.withOpacity(0.4),
+                                    offset: const Offset(0, 4),
+                                    blurRadius: 12,
+                                  ),
+                                ],
+                              ),
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  onTap: () {
+                                    context.read<CartBloc>().add(AddCartItem(widget.iceCream));
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Row(
+                                          children: [
+                                            const Icon(Icons.check_circle, color: Colors.white),
+                                            const SizedBox(width: 12),
+                                            Text('${widget.iceCream.name} added to cart!'),
+                                          ],
+                                        ),
+                                        backgroundColor: Colors.green.shade400,
+                                        duration: const Duration(seconds: 2),
+                                        behavior: SnackBarBehavior.floating,
+                                        margin: const EdgeInsets.all(16),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 16),
+                                    child: Center(
+                                      child: Text(
+                                        "Add to Cart",
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 24),
                     ],
                   ),
                 ),
