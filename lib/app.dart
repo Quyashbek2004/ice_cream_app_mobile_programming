@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:user_repository/user_repository.dart';
 import 'app_view.dart';
 import 'blocs/authentication/authentication_bloc.dart';
+import 'blocs/cart/cart_bloc.dart';
+import 'blocs/review/review_bloc.dart';
 
 class MyApp extends StatelessWidget {
   final UserRepository userRepository;
@@ -10,8 +12,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthenticationBloc>(
-      create: (context) => AuthenticationBloc(userRepository: userRepository),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthenticationBloc>(
+          create: (context) => AuthenticationBloc(userRepository: userRepository),
+        ),
+        BlocProvider<CartBloc>(
+          create: (context) => CartBloc(),
+        ),
+        BlocProvider<ReviewBloc>(
+          create: (context) => ReviewBloc(
+            reviewRepository: ReviewRepository(),
+          ),
+        ),
+      ],
       child: MyAppView(),
     );
   }

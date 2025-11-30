@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/ice_cream.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_app/blocs/cart/cart_bloc.dart';
 import 'package:flutter_app/screens/home/views/details_screen.dart'; // <-- your details page
 
 class YourIceCreamCard extends StatelessWidget {
@@ -130,7 +132,11 @@ class YourIceCreamCard extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () {
-                        // Add to cart
+                        context.read<CartBloc>().add(AddCartItem(iceCream));
+                        // Optionally show feedback:
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('${iceCream.name} added to cart')),
+                        );
                       },
                       icon: const Icon(CupertinoIcons.add_circled_solid),
                     ),
