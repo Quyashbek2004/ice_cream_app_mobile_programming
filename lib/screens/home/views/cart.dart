@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/blocs/cart/cart_bloc.dart';
+import 'package:flutter_app/screens/home/views/checkout_screen.dart';
 
 class Cart extends StatelessWidget {
   const Cart({super.key});
@@ -27,16 +28,63 @@ class Cart extends StatelessWidget {
               ),
             );
           }
-          return ListView.builder(
-            itemCount: state.items.length,
-            itemBuilder: (context, index) {
-              final item = state.items[index];
-              return ListTile(
-                title: Text(item.iceCream.name),
-                subtitle: Text('\$${item.iceCream.price}'),
-                trailing: Text('Qty: ${item.quantity}'),
-              );
-            },
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: state.items.length,
+                  itemBuilder: (context, index) {
+                    final item = state.items[index];
+                    return ListTile(
+                      title: Text(item.iceCream.name),
+                      subtitle: Text('\$${item.iceCream.price}'),
+                      trailing: Text('Qty: ${item.quantity}'),
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'Total: \$${state.total.toStringAsFixed(2)}',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.pinkAccent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => CheckoutScreen(
+                                cartItems: state.items,
+                              ),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'Proceed to Checkout',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           );
         },
       ),

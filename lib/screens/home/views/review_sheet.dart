@@ -35,14 +35,14 @@ class _ReviewSheetState extends State<ReviewSheet> {
   void _submitReview() {
     if (_rating == 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please select a rating')),
+        const SnackBar(content: Text('Please select a rating')),
       );
       return;
     }
 
     if (_commentController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please write a comment')),
+        const SnackBar(content: Text('Please write a comment')),
       );
       return;
     }
@@ -52,7 +52,7 @@ class _ReviewSheetState extends State<ReviewSheet> {
 
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please log in to submit a review')),
+        const SnackBar(content: Text('Please log in to submit a review')),
       );
       return;
     }
@@ -60,7 +60,7 @@ class _ReviewSheetState extends State<ReviewSheet> {
     context.read<ReviewBloc>().add(
       SubmitReview(
         iceCreamId: widget.iceCreamId,
-        userId: user.id,
+        userId: user.userId,
         userName: user.email.split('@')[0],
         rating: _rating,
         comment: _commentController.text,
@@ -69,7 +69,7 @@ class _ReviewSheetState extends State<ReviewSheet> {
 
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Review submitted successfully!')),
+      const SnackBar(content: Text('Review submitted successfully!')),
     );
   }
 
@@ -86,16 +86,16 @@ class _ReviewSheetState extends State<ReviewSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Write a Review',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 16),
-              Text('Rate this product'),
-              SizedBox(height: 8),
+              const SizedBox(height: 16),
+              const Text('Rate this product'),
+              const SizedBox(height: 8),
               StarRating(
                 initialRating: _rating,
                 onRatingChanged: (rating) {
@@ -104,7 +104,7 @@ class _ReviewSheetState extends State<ReviewSheet> {
                   });
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextField(
                 controller: _commentController,
                 decoration: InputDecoration(
@@ -115,16 +115,16 @@ class _ReviewSheetState extends State<ReviewSheet> {
                 ),
                 maxLines: 4,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _submitReview,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue.shade200,
-                    padding: EdgeInsets.symmetric(vertical: 12),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Submit Review',
                     style: TextStyle(
                       fontSize: 16,

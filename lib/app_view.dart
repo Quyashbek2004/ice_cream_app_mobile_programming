@@ -7,7 +7,6 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'screens/authentication/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'screens/authentication/views/welcome_screen.dart';
 import 'screens/home/views/home_screen.dart';
-import 'package:flutter_app/blocs/cart/cart_bloc.dart';
 
 class MyAppView extends StatefulWidget {
   const MyAppView({super.key});
@@ -28,16 +27,9 @@ class _MyAppViewState extends State<MyAppView> {
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
           if (state.status == AuthenticationStatus.authenticated) {
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) =>
-                      SignInBloc(context.read<AuthenticationBloc>().userRepository),
-                ),
-                BlocProvider(
-                  create: (_) => CartBloc(),
-                ),
-              ],
+            return BlocProvider(
+              create: (context) =>
+                  SignInBloc(context.read<AuthenticationBloc>().userRepository),
               child: Scaffold(
                 backgroundColor: Colors.pink.shade100,
                 body: PageView(
