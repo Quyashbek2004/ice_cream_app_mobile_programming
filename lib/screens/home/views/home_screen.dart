@@ -1,11 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/screens/authentication/blocs/sign_in_bloc/sign_in_bloc.dart';
-import 'package:flutter_app/screens/home/views/details_screen.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../components/ice_cream_card.dart';
 import '../../../data/ice_cream_data.dart';
-import '../../../models/ice_cream.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -34,17 +30,17 @@ class HomeScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          SizedBox(height: 5,),
+          SizedBox(height: 5),
           ClipRRect(
             borderRadius: BorderRadiusGeometry.circular(24),
             child: Image.asset(
               'assets/discount.png',
-               width: double.infinity,
-               height: 200,
-               fit: BoxFit.cover,
+              width: double.infinity,
+              height: 200,
+              fit: BoxFit.cover,
             ),
           ),
-          SizedBox(height: 5,),
+          SizedBox(height: 5),
           // HomePage widget
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,9 +51,10 @@ class HomeScreen extends StatelessWidget {
                 child: Text(
                   "Milk",
                   style: TextStyle(
-                    fontSize: 32, 
+                    fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                    color: Colors.white,
+                  ),
                 ),
               ),
               SizedBox(
@@ -100,11 +97,15 @@ class HomeScreen extends StatelessWidget {
                     childAspectRatio: 2,
                   ),
                   itemCount: iceCreamList
-                      .where((ic) => ic.macros.any((m) => m.title == "Chocolate"))
+                      .where(
+                        (ic) => ic.macros.any((m) => m.title == "Chocolate"),
+                      )
                       .length,
                   itemBuilder: (context, i) {
                     final chocoList = iceCreamList
-                        .where((ic) => ic.macros.any((m) => m.title == "Chocolate"))
+                        .where(
+                          (ic) => ic.macros.any((m) => m.title == "Chocolate"),
+                        )
                         .toList();
                     final iceCream = chocoList[i];
 
@@ -118,10 +119,11 @@ class HomeScreen extends StatelessWidget {
                 padding: EdgeInsets.all(12.0),
                 child: Text(
                   "Fruits",
-                  style: TextStyle(fontSize: 32, 
-                  fontWeight: FontWeight.bold,
-                  color: Colors.pink
-                ),
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.pink,
+                  ),
                 ),
               ),
               SizedBox(
@@ -137,7 +139,9 @@ class HomeScreen extends StatelessWidget {
                       .length,
                   itemBuilder: (context, i) {
                     final fruitList = iceCreamList
-                        .where((ic) => ic.macros.any((m) => m.title == "Fruits"))
+                        .where(
+                          (ic) => ic.macros.any((m) => m.title == "Fruits"),
+                        )
                         .toList();
                     final iceCream = fruitList[i];
 
@@ -147,7 +151,6 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
-        
         ],
       ),
     );

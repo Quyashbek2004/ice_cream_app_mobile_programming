@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'screens/authentication/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'screens/authentication/views/welcome_screen.dart';
+import 'screens/home/views/delivery.dart';
 import 'screens/home/views/home_screen.dart';
+import 'screens/home/views/payment.dart';
 
 class MyAppView extends StatefulWidget {
   const MyAppView({super.key});
@@ -24,6 +26,10 @@ class _MyAppViewState extends State<MyAppView> {
     return MaterialApp(
       title: 'Ice-Cream Shop',
       debugShowCheckedModeBanner: false,
+      routes: {
+        DeliveryScreen.routeName: (_) => const DeliveryScreen(),
+        PaymentScreen.routeName: (_) => const PaymentScreen(),
+      },
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
           if (state.status == AuthenticationStatus.authenticated) {
@@ -70,7 +76,7 @@ class _MyAppViewState extends State<MyAppView> {
                           });
                           _pageController.animateToPage(
                             index,
-                            duration: Duration(milliseconds: 400),
+                            duration: const Duration(milliseconds: 400),
                             curve: Curves.ease,
                           );
                         },
@@ -80,7 +86,7 @@ class _MyAppViewState extends State<MyAppView> {
                         backgroundColor: Colors.pink.shade200,
                         tabBackgroundColor: Colors.pink.shade100,
                         padding: const EdgeInsets.all(10),
-                        tabs: [
+                        tabs: const [
                           GButton(
                             icon: Icons.home,
                             text: 'Home',
@@ -101,11 +107,42 @@ class _MyAppViewState extends State<MyAppView> {
                     ),
                   ),
                 ),
+                floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+                floatingActionButton: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    FloatingActionButton.extended(
+                      heroTag: 'delivery_button',
+                      backgroundColor: Colors.white,
+                      icon: const Icon(
+                        Icons.local_shipping,
+                        color: Colors.pink,
+                      ),
+                      label: const Text(
+                        'Delivery',
+                        style: TextStyle(color: Colors.pink),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(DeliveryScreen.routeName);
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    FloatingActionButton.extended(
+                      heroTag: 'payment_button',
+                      backgroundColor: Colors.pinkAccent,
+                      icon: const Icon(Icons.payments),
+                      label: const Text('Payment'),
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(PaymentScreen.routeName);
+                      },
+                    ),
+                  ],
+                ),
               ),
             );
-          } else {
-            return WelcomeScreen();
           }
+          return const WelcomeScreen();
         },
       ),
     );

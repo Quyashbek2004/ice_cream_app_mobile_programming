@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/ice_cream.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_app/blocs/cart/cart_bloc.dart';
+import '../services/cart_service.dart';
 import 'package:flutter_app/screens/home/views/details_screen.dart'; // <-- your details page
 
 class YourIceCreamCard extends StatelessWidget {
@@ -12,6 +11,7 @@ class YourIceCreamCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cartService = CartService();
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
       child: Material(
@@ -131,12 +131,16 @@ class YourIceCreamCard extends StatelessWidget {
                       ],
                     ),
                     IconButton(
-                      onPressed: () {
-                        context.read<CartBloc>().add(AddCartItem(iceCream));
-                        // Optionally show feedback:
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('${iceCream.name} added to cart')),
-                        );
+                      onPressed: () async {
+                        await cartService.addToCart(iceCream);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('${iceCream.name} added to cart'),
+                              backgroundColor: Colors.pinkAccent,
+                            ),
+                          );
+                        }
                       },
                       icon: const Icon(CupertinoIcons.add_circled_solid),
                     ),

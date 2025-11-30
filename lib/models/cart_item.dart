@@ -1,46 +1,57 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_app/models/ice_cream.dart';
 
+/// Represents a single item in the user's cart. Data lives under
+/// `users/{uid}/cart/{cartItemId}` in Firestore so it can be reused
+/// by checkout without new data structures.
 class CartItem {
   final String id;
-  final IceCream iceCream;
-  int quantity;
+  final String productId;
+  final String name;
+  final String imageUrl;
+  final double price;
+  final int quantity;
 
-  CartItem({
+  const CartItem({
     required this.id,
-    required this.iceCream,
-    this.quantity = 1,
+    required this.productId,
+    required this.name,
+    required this.imageUrl,
+    required this.price,
+    required this.quantity,
   });
 
-  String get productId => iceCream.id;
-  String get name => iceCream.name;
-  String get imageUrl => iceCream.imageUrl;
-  double get price => iceCream.price;
-  double get total => iceCream.price * quantity;
-  double get subtotal => iceCream.price * quantity;
+  double get subtotal => price * quantity;
 
-  Map<String, dynamic> toMap() => {
-    'productId': iceCream.id,
-    'name': iceCream.name,
-    'imageUrl': iceCream.imageUrl,
-    'price': iceCream.price,
-    'quantity': quantity,
-  };
+  CartItem copyWith({int? quantity}) {
+    return CartItem(
+      id: id,
+      productId: productId,
+      name: name,
+      imageUrl: imageUrl,
+      price: price,
+      quantity: quantity ?? this.quantity,
+    );
+  }
 
-  factory CartItem.fromDocument(QueryDocumentSnapshot<Map<String, dynamic>> doc) {
-    final data = doc.data();
+  Map<String, dynamic> toMap() {
+    return {
+      'productId': productId,
+      'name': name,
+      'imageUrl': imageUrl,
+      'price': price,
+      'quantity': quantity,
+    };
+  }
+
+  static CartItem fromDocument(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return CartItem(
       id: doc.id,
-      iceCream: IceCream(
-        id: data['productId'] ?? '',
-        name: data['name'] ?? '',
-        description: '',
-        price: (data['price'] ?? 0).toDouble(),
-        imageUrl: data['imageUrl'] ?? '',
-        tags: [],
-        macros: [],
-      ),
-      quantity: data['quantity'] ?? 1,
+      productId: data['productId'] as String,
+      name: data['name'] as String,
+      imageUrl: data['imageUrl'] as String,
+      price: (data['price'] as num).toDouble(),
+      quantity: data['quantity'] as int,
     );
   }
 }
